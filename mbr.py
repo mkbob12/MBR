@@ -81,10 +81,11 @@ def read_file(file_path):
                 print("File System Type",data_type[0:4])
                 jump += 16
                 fpartition = data[jump:jump+16]
-    
                 print("====================================\n")
                 
-            if fpartition[4] == 5:
+                continue
+                
+            elif fpartition[4] == 5:
                 print("- EBR File System -")
                 
                 LBA_ADDRESS = fpartition[8:12]
@@ -124,6 +125,25 @@ def read_file(file_path):
                         
                         real_ADDRESS = int_to_bytes(real_ADDRESS)
                         real_ADDRESS_hex= binascii.hexlify(real_ADDRESS).decode('utf-8')
+                        
+                        
+                        file.seek(int(real_ADDRESS_hex, 16)+3)
+                        data_type = file.read()
+                        print(data_type[0:4])
+                        
+                        print("File System Type",data_type[0:4])
+                        
+                        
+                        # Numbers of sector 사이즈 구하기 
+                        
+                        f_size = nbr_type[12:16]
+                        f_size = bytes_to_int(f_size)
+                        f_size = f_size * 512 
+                        f_size = int_to_bytes(f_size)
+                   
+                        f_size= binascii.hexlify(f_size).decode('utf-8')
+                        print("File System Size", f_size)
+                        
 
                         print("File System REAL_MBR_ADDRESS", real_ADDRESS_hex)
                         
@@ -151,7 +171,7 @@ def read_file(file_path):
                         
                         print("===============")
                     if(nbr_type[20] == 0) : 
-                        print("====== 끝입니다 ====")
+                        print("====== EOF ====")
                         type = True
                         break
                 
